@@ -20,8 +20,9 @@ db.connect(err => {
     if (err) throw err;
     console.log("database connected");
     // run inquire prompts after db connection
-    init();
     app.listen(PORT, () => {
         console.log(`Server running on PORT ${PORT}`);
     });
 });
+
+//init();
