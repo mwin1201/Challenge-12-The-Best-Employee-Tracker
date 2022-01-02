@@ -1,5 +1,4 @@
 const express = require("express");
-const { restoreDefaultPrompts } = require("inquirer");
 const db = require("../../db/connection");
 const router = express.Router();
 const validate = require('../../utils/validate');
