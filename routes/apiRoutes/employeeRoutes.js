@@ -1,7 +1,7 @@
-const express = require("express");
+/* const express = require("express");
 const db = require("../../db/connection");
 const router = express.Router();
-const validate = require('../../utils/validate');
+const validate = require('../../utils/validate'); */
 
 router.get('/employees', (req, res) => {
     const sql = `SELECT * FROM employee`;

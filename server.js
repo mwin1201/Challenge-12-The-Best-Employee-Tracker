@@ -4,7 +4,19 @@ const db = require("./db/connection");
 //const PORT = process.env.PORT || 3001;
 //const app = express();
 const cTable = require("console.table");
-const [ mainMenu, deptPrompt, rolePrompt, empPrompt, updateEmpPrompt, continuePrompt ] = require('./lib/index');
+const [
+    mainMenu,
+    deptPrompt,
+    rolePrompt,
+    empPrompt,
+    updateEmpPrompt,
+    updateEmpManagerPrompt,
+    UtilizedBudgetPrompt,
+    viewEmpByManagerPrompt,
+    viewEmpByDeptPrompt,
+    deleteRolePrompt,
+    deleteEmpPrompt
+] = require('./lib/index');
 const inquirer = require("inquirer");
 const validate = require('./utils/validate');
 
@@ -39,6 +51,27 @@ const init = () => {
             case "Update an employee role":
                 updateEmpRole();
                 break;
+            case "Update employee manager":
+                updateEmpManager();
+                break;
+            case "View employees by manager":
+                viewEmpByManager();
+                break;
+            case "View employees by department":
+                viewEmpByDept();
+                break;
+            case "Delete department":
+                deleteDept();
+                break;
+            case "Delete role":
+                deleteRole();
+                break;
+            case "Delete employee":
+                deleteEmp();
+                break;
+            case "View utilized budget for department":
+                utilizedBudget();
+                break;
             default:
                 close();
         }
@@ -53,7 +86,9 @@ const viewDepts = () => {
         console.log("ALL DEPARTMENTS")
         console.table(results);
     });
-    continueCheck();
+    setTimeout(() => {
+        init();
+    }, 1000);
 };
 
 const viewRoles = () => {
@@ -63,7 +98,9 @@ const viewRoles = () => {
         console.log("All ROLES");
         console.table(results);
     });
-    //init();
+    setTimeout(() => {
+        init();
+    }, 1000);
 };
 
 const viewEmps = () => {
@@ -73,7 +110,9 @@ const viewEmps = () => {
         console.log("All EMPLOYEES");
         console.table(results);
     });
-    //init();
+    setTimeout(() => {
+        init();
+    }, 1000);
 };
 
 const addDept = () => {
@@ -89,11 +128,16 @@ const addDept = () => {
         const params = [answer.addDepartment];
 
         db.query(sql, params, (err, result) => {
-            if (err) throw err;
-            viewDepts();
+            if (err) {
+                console.log("There has been an error: " + err.code);
+                console.log("Please try again");
+                addDept();
+            }
+            else {
+                viewDepts();
+            }
         });
     });
-    //init();
 };
 
 const addRole = () => {
@@ -117,11 +161,9 @@ const addRole = () => {
             }
             else {
                 viewRoles();
-                init();
             }
         });
     });
-    //init();
 };
 
 const addEmps = () => {
@@ -144,11 +186,9 @@ const addEmps = () => {
             }
             else {
                 viewEmps();
-                init();
             }
         });
     });
-    //init();
 };
 
 const updateEmpRole = () => {
@@ -171,27 +211,212 @@ const updateEmpRole = () => {
             }
             else {
                 viewEmps();
-                init();
             }
         });
     });
 };
 
+const updateEmpManager = () => {
+    inquirer.prompt(updateEmpManagerPrompt)
+    .then((answer) => {
+        const errors = validate(answer, 'empId', 'manager_id');
+        if (errors) {
+            console.log(errors);
+            return;
+        }
+
+        const sql = `UPDATE employee SET manager_id = ? WHERE id = ?`;
+        const params = [answer.manager_id, answer.empId];
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log("There has been an error: " + err.code);
+                console.log("Please try again");
+                updateEmpManager();
+            }
+            else {
+                viewEmps();
+            }
+        });
+    });
+};
+
+const viewEmpByManager = () => {
+    inquirer.prompt(viewEmpByManagerPrompt)
+    .then((answer) => {
+        const errors = validate(answer, 'managerId');
+        if (errors) {
+            console.log(errors);
+            return;
+        }
+
+        const sql = `SELECT first_name, last_name
+        FROM employee
+        WHERE manager_id = ?`;
+        const params = [answer.managerId];
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log("There has been an error: " + err.code);
+                console.log("Please try again");
+                viewEmpByManager();
+            }
+            else {
+                console.table(result);
+                setTimeout(() => {
+                    init();
+                }, 1000);
+            }
+        });
+    });
+};
+
+const viewEmpByDept = () => {
+    inquirer.prompt(viewEmpByDeptPrompt)
+    .then((answer) => {
+        const errors = validate(answer, 'departmentId');
+        if (errors) {
+            console.log(errors);
+            return;
+        }
+
+        const sql = `SELECT employee.first_name, employee.last_name, department.name
+        FROM employee
+        INNER JOIN role ON employee.role_id = role.id
+        INNER JOIN department ON role.department_id = department.id
+        WHERE department.id = ?`;
+        const params = [answer.departmentId];
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log("There has been an error: " + err.code);
+                console.log("Please try again");
+                viewEmpByDept();
+            }
+            else {
+                console.table(result);
+                setTimeout(() => {
+                    init();
+                }, 1000);
+            }
+        });
+    });
+};
+
+const deleteDept = () => {
+    inquirer.prompt(viewEmpByDeptPrompt)
+    .then((answer) => {
+        const errors = validate(answer, 'departmentId');
+        if (errors) {
+            console.log(errors);
+            return;
+        }
+
+        const sql = `DELETE FROM department WHERE department.id = ?`;
+        const params = [answer.departmentId];
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log("There has been an error: " + err.code);
+                console.log("Please try again");
+                deleteDept();
+            }
+            else {
+                console.table(result);
+                viewDepts();
+            }
+        });
+    });
+};
+
+const deleteRole = () => {
+    inquirer.prompt(deleteRolePrompt)
+    .then((answer) => {
+        const errors = validate(answer, 'roleId');
+        if (errors) {
+            console.log(errors);
+            return;
+        }
+
+        const sql = `DELETE FROM role WHERE role.id = ?`;
+        const params = [answer.roleId];
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log("There has been an error: " + err.code);
+                console.log("Please try again");
+                deleteDept();
+            }
+            else {
+                console.table(result);
+                viewRoles();
+            }
+        });
+    });
+};
+
+const deleteEmp = () => {
+    inquirer.prompt(deleteEmpPrompt)
+    .then((answer) => {
+        const errors = validate(answer, 'empId');
+        if (errors) {
+            console.log(errors);
+            return;
+        }
+
+        const sql = `DELETE FROM employee WHERE employee.id = ?`;
+        const params = [answer.empId];
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log("There has been an error: " + err.code);
+                console.log("Please try again");
+                deleteDept();
+            }
+            else {
+                console.table(result);
+                viewEmps();
+            }
+        });
+    });
+};
+
+const utilizedBudget = () => {
+    inquirer.prompt(UtilizedBudgetPrompt)
+    .then((answer) => {
+        const errors = validate(answer, 'departmentId');
+        if (errors) {
+            console.log(errors);
+            return;
+        }
+
+        const sql = `SELECT department.id, department.name, SUM(role.salary) AS Salary
+        FROM department
+        INNER JOIN role ON department.id = role.department_id
+        INNER JOIN employee ON role.id = employee.role_id
+        WHERE department.id = ?
+        GROUP BY department.name`;
+        const params = [answer.departmentId];
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log("There has been an error: " + err.code);
+                console.log("Please try again");
+                utilizedBudget();
+            }
+            else {
+                console.table(result);
+                setTimeout(() => {
+                    init();
+                }, 1000);
+            }
+        });
+    })
+};
+
 const close = () => {
     console.log("Thanks for using the Employee Tracker! Goodbye!");
     db.end();
-};
-
-const continueCheck = () => {
-    inquirer.prompt(continuePrompt)
-    .then((answer) => {
-        if (answer.checkContinue === 'Yes') {
-            init();
-        }
-        else {
-            close();
-        }
-    });
 };
 
 init();

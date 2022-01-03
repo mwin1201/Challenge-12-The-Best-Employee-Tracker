@@ -1,2 +1,5 @@
 node_modules/
-routes/
+routes/apiRoutes/departmentRoutes.js
+routes/apiRoutes/employeeRoutes.js
+routes/apiRoutes/index.js
+routes/apiRoutes/roleRoutes.js
