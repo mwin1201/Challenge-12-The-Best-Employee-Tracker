@@ -10,12 +10,15 @@
   ![employee_tracker_main_menu](https://user-images.githubusercontent.com/90287696/147992893-2cf0261f-dc80-4d20-ad9e-8f29cb2f7177.png)
 
   View Departments:
+
   ![employee_tracker_viewDepts](https://user-images.githubusercontent.com/90287696/147992889-19803961-e46f-4c45-8b89-e19eb233282c.png)
 
   View Employees:
+
   ![employee_tracker_viewEmps](https://user-images.githubusercontent.com/90287696/147992890-f2189514-2a2e-48c2-af57-c0f5b7d55336.png)
 
   View Roles:
+  
   ![employee_tracker_viewRoles](https://user-images.githubusercontent.com/90287696/147992891-4caceca4-4323-4da3-b5f0-03527f977f6f.png)
 
   ## Table of Contents
