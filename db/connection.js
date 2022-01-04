@@ -1,3 +1,5 @@
+// file to connect to mysql automatically via my credentials
+
 const mysql = require("mysql2");
 
 const db = mysql.createConnection(

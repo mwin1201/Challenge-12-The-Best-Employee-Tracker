@@ -18,14 +18,14 @@
   ![employee_tracker_viewEmps](https://user-images.githubusercontent.com/90287696/147992890-f2189514-2a2e-48c2-af57-c0f5b7d55336.png)
 
   View Roles:
-  
+
   ![employee_tracker_viewRoles](https://user-images.githubusercontent.com/90287696/147992891-4caceca4-4323-4da3-b5f0-03527f977f6f.png)
 
   ## Table of Contents
   1. [Installation](#installation)
   2. [Usage](#usage)
   3. [Contributing](#contributing)
-  4. [Tests](#tests)
+  4. [Video](#video)
   5. [License](#license)
   6. [Questions](#questions)
 
@@ -38,8 +38,8 @@
   ## Contributing
   See contact section below. Message me with suggested additions.
 
-  ## Tests
-  NA
+  ## Video
+  [Walk-through video](https://drive.google.com/file/d/1P1FHXQKsLKbeHI_pxPbz_HDhjsLzUqXT/view?usp=sharing)
   
   ## License
   Copyright (c) 2021 Max Winter. Licensed under the MIT license.

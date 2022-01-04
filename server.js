@@ -1,9 +1,7 @@
-//const express = require("express");
 const db = require("./db/connection");
-//const apiRoutes = require("./routes/apiRoutes");
-//const PORT = process.env.PORT || 3001;
-//const app = express();
 const cTable = require("console.table");
+
+// all the prompt arrays
 const [
     mainMenu,
     deptPrompt,
@@ -20,7 +18,7 @@ const [
 const inquirer = require("inquirer");
 const validate = require('./utils/validate');
 
-
+// initiate application with main menu
 const init = () => {
     console.log(
         `========================
@@ -78,7 +76,7 @@ const init = () => {
     });
 };
 
-
+// view all departments
 const viewDepts = () => {
     const sql = `SELECT * FROM department`;
     db.query(sql, (err, results) => {
@@ -91,8 +89,10 @@ const viewDepts = () => {
     }, 1000);
 };
 
+// view all roles
 const viewRoles = () => {
-    const sql = `SELECT * FROM role`;
+    const sql = `SELECT role.id, role.title, role.salary, department.name AS department FROM role
+    INNER JOIN department ON role.department_id = department.id`;
     db.query(sql, (err, results) => {
         if (err) throw err;
         console.log("All ROLES");
@@ -103,8 +103,15 @@ const viewRoles = () => {
     }, 1000);
 };
 
+// view all employees
 const viewEmps = () => {
-    const sql = `SELECT * FROM employee`;
+    const sql = `SELECT A.id, CONCAT(A.first_name,' ', A.last_name) AS employee, role.title, department.name AS department, 
+    role.salary, CONCAT(B.first_name,' ', B.last_name) AS manager
+    FROM employee A
+    LEFT JOIN employee B ON B.id = A.manager_id
+    INNER JOIN role ON role.id = A.role_id
+    INNER JOIN department ON department.id = role.department_id
+    ORDER BY manager`;
     db.query(sql, (err, results) => {
         if (err) throw err;
         console.log("All EMPLOYEES");
@@ -115,6 +122,7 @@ const viewEmps = () => {
     }, 1000);
 };
 
+// add department
 const addDept = () => {
     inquirer.prompt(deptPrompt)
     .then((answer) => {
@@ -140,6 +148,7 @@ const addDept = () => {
     });
 };
 
+// add role
 const addRole = () => {
     inquirer.prompt(rolePrompt)
     .then((answer) => {
@@ -166,6 +175,7 @@ const addRole = () => {
     });
 };
 
+// add employee
 const addEmps = () => {
     inquirer.prompt(empPrompt)
     .then((answer) => {
@@ -191,6 +201,7 @@ const addEmps = () => {
     });
 };
 
+// update employee role
 const updateEmpRole = () => {
     inquirer.prompt(updateEmpPrompt)
     .then((answer) => {
@@ -216,6 +227,7 @@ const updateEmpRole = () => {
     });
 };
 
+// update employee manager
 const updateEmpManager = () => {
     inquirer.prompt(updateEmpManagerPrompt)
     .then((answer) => {
@@ -241,6 +253,7 @@ const updateEmpManager = () => {
     });
 };
 
+// view employees by manager
 const viewEmpByManager = () => {
     inquirer.prompt(viewEmpByManagerPrompt)
     .then((answer) => {
@@ -271,6 +284,7 @@ const viewEmpByManager = () => {
     });
 };
 
+// view employees by department
 const viewEmpByDept = () => {
     inquirer.prompt(viewEmpByDeptPrompt)
     .then((answer) => {
@@ -303,6 +317,7 @@ const viewEmpByDept = () => {
     });
 };
 
+// delete department
 const deleteDept = () => {
     inquirer.prompt(viewEmpByDeptPrompt)
     .then((answer) => {
@@ -329,6 +344,7 @@ const deleteDept = () => {
     });
 };
 
+// delete role
 const deleteRole = () => {
     inquirer.prompt(deleteRolePrompt)
     .then((answer) => {
@@ -355,6 +371,7 @@ const deleteRole = () => {
     });
 };
 
+// delete employee
 const deleteEmp = () => {
     inquirer.prompt(deleteEmpPrompt)
     .then((answer) => {
@@ -381,6 +398,7 @@ const deleteEmp = () => {
     });
 };
 
+// view utilized department budget
 const utilizedBudget = () => {
     inquirer.prompt(UtilizedBudgetPrompt)
     .then((answer) => {
@@ -414,6 +432,7 @@ const utilizedBudget = () => {
     })
 };
 
+// leave the application
 const close = () => {
     console.log("Thanks for using the Employee Tracker! Goodbye!");
     db.end();
